@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
-import Head from "next/head";
+import { inter } from "./fonts";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: "restcountries",
@@ -21,19 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-      <body
-        className={`${inter.className} ${poppins.className} overflow-x-hidden`}
-      >
-        {children}
-      </body>
+      <body className={`${inter.className} overflow-x-hidden`}>{children}</body>
     </html>
   );
 }
