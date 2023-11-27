@@ -17,11 +17,13 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: #f7e6ef;
+  color: #202020;
+}
+
+.limiter {
+  width: 100%;
+  max-width: 1214px;
+  padding: 0 15px;
+  margin: 0 auto;
 }
