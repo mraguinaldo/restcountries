@@ -1,14 +1,20 @@
 import { poppins } from "@/app/fonts";
+import { motion } from "framer-motion";
 
 interface PropsType {
   active: boolean;
   name: string;
+  id: number;
   onClick: () => void;
 }
 
-const Continent = ({ onClick, active, name }: PropsType) => {
+const Continent = ({ onClick, active, name, id }: PropsType) => {
   return (
-    <h4
+    <motion.h4
+      initial={{ opacity: 0, x: 30 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.3, delay: id / 6 + 0.9 }}
       onClick={onClick}
       className={`${
         poppins.className
@@ -19,7 +25,7 @@ const Continent = ({ onClick, active, name }: PropsType) => {
       }`}
     >
       {name}
-    </h4>
+    </motion.h4>
   );
 };
 

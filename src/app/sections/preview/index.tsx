@@ -76,6 +76,18 @@ export const Preview = () => {
     return setCountryLimiter((prev) => prev + 9);
   };
 
+  let filtered: any;
+
+  const getDataApi = async (currentTarget: string) => {
+    const { data } = await API.get("/");
+
+    filtered = data.filter((country: any) =>
+      country.name.common.includes(currentTarget)
+    );
+
+    console.log(filtered);
+  };
+
   useEffect(() => {
     const fetchDataAPI = async () => {
       const { data } = await API.get("/");
@@ -96,6 +108,7 @@ export const Preview = () => {
             {CONTINENTS.map(({ id, name, image }) => (
               <Continent
                 key={id}
+                id={id}
                 name={name}
                 active={id === continent.id}
                 onClick={() => {
@@ -105,7 +118,7 @@ export const Preview = () => {
               />
             ))}
           </div>
-          <Input />
+          <Input onChange={(e: any) => getDataApi(e.currentTarget.value)} />
         </header>
 
         <div
