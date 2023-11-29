@@ -1,76 +1,71 @@
 "use client";
 import { useEffect, useState } from "react";
-import { poppins } from "../../fonts";
-import { MagnifyingGlass, Circle } from "@phosphor-icons/react";
 import { API } from "@/services/data";
 import { Country } from "@/components/cards/country";
 import { CONTINENTS } from "./data";
+import { Button } from "@/components/button";
+import { ActiveMap } from "@/components/map";
+import Continent from "./continent";
+import { Input } from "@/components/input";
 
 export const Preview = () => {
-  const [continentActive, setContinentActive] = useState(0);
-  const [continent, setContinent] = useState("Africa");
-  const [limiter, setLimiter] = useState(9);
-  const [totalContries, setTotalContries] = useState(0);
-  const [activeContinentMap, setActiveContinentMap] = useState(
-    CONTINENTS[0].image
-  );
-  const [countries, setCountries] = useState([
-    { name: "", capital: "", flag: "" },
-  ]);
+  const [continent, setContinent] = useState({ name: "Africa", id: 0 });
+  const [countryLimiter, setCountryLimiter] = useState(9);
+  const [totalCountries, setTotalCountries] = useState(0);
+  const [activeMap, setActiveMap] = useState(CONTINENTS[0].image);
+  const [countries, setCountries] = useState([]);
 
-  const handleToogleContinentActive = (
-    id: number,
-    image: string,
-    name: string
-  ) => {
-    setContinentActive(id);
-    handleToogleMapContinentActive(image);
-    handleGetDataForContinentActive(name);
+  const toggleContinent = (id: number, image: string, name: string) => {
+    setContinent({ name, id });
+    changeMap(image);
   };
 
-  const handleToogleMapContinentActive = (image: string) => {
-    setActiveContinentMap(image);
+  const changeMap = (image: string) => {
+    setActiveMap(image);
   };
 
-  const handleGetDataForContinentActive = (name: string) => {
-    setContinent(name);
+  const captureCountries = (data: []) => {
+    let capturedCountries = data.filter(
+      (country: any) => country.continents[0] === continent.name
+    );
+
+    generateCountries(capturedCountries);
   };
 
-  let allConutries: any;
+  const generateCountries = (capturedCountries: any) => {
+    let countriesCreated: any = [];
+    capturedCountries.map((country: any, index: number) => {
+      let conditionGenerateCountry = index < countryLimiter;
+      if (conditionGenerateCountry) {
+        const { name, capital, flags } = country;
+        let countryCreated = {
+          name: name.common,
+          capital,
+          flag: flags.png,
+        };
 
-  let newConuntries: any = [];
+        countriesCreated.push(countryCreated);
+      }
+
+      setCountries(countriesCreated);
+    });
+
+    getTotalCountries(capturedCountries);
+  };
+
+  const getTotalCountries = (capturedCountries: any) => {
+    let sizeCapturedCountries = capturedCountries.length;
+    setTotalCountries(sizeCapturedCountries);
+  };
 
   useEffect(() => {
-    const getDataApi = async () => {
-      let { data } = await API.get("/");
-
-      // console.log(data);
-
-      allConutries = data.filter(
-        (country: any) => country.continents[0] === continent
-      );
-
-      setTotalContries(allConutries.length);
-
-      // data.map((country: any) => {
-      //   console.log(country.continents[0]);
-      // });
-
-      allConutries.map((countr: any, index: number) => {
-        if (index < limiter) {
-          let myCountry = {
-            name: countr.name.common,
-            capital: countr.capital,
-            flag: countr.flags.png,
-          };
-          newConuntries.push(myCountry);
-        }
-      });
-      return setCountries(newConuntries);
+    const fetchDataAPI = async () => {
+      const { data } = await API.get("/");
+      captureCountries(data);
     };
 
-    getDataApi();
-  }, [continent, limiter]);
+    fetchDataAPI();
+  }, [continent, countryLimiter]);
 
   return (
     <section className="bg-white py-12 lg:py-32">
@@ -81,48 +76,27 @@ export const Preview = () => {
             className="flex flex-col sm:flex-row  gap-4 sm:items-center sm:gap-8"
           >
             {CONTINENTS.map(({ id, name, image }) => (
-              <div
+              <Continent
                 key={id}
-                id="continent"
+                name={name}
+                active={id === continent.id}
                 onClick={() => {
-                  handleToogleContinentActive(id, image, name);
+                  toggleContinent(id, image, name);
+                  setCountryLimiter(9);
                 }}
-              >
-                <h4
-                  className={`${
-                    poppins.className
-                  } cursor-pointer border-b text-sm  lg:text-lg  ${
-                    id === continentActive
-                      ? "text-[#D2A4A4] border-[#D2A4A4] transition-all duration-300"
-                      : "text-[#353535] border-[#353535]"
-                  }`}
-                >
-                  {name}
-                </h4>
-              </div>
+              />
             ))}
           </div>
-          <div className="bg-gray-300 flex justify-between pl-6 p-4 rounded-full transition-all duration-500 outline-none w-16 hover:w-[80%] gap-4">
-            <input
-              type="text"
-              placeholder="Search country..."
-              className="bg-transparent outline-none w-[80%]"
-            />
-            <button className="ml-[-24px]">
-              <MagnifyingGlass width={32} height={32} />
-            </button>
-          </div>
+          <Input />
         </header>
 
         <div
           id="preview"
           className="flex flex-col items-center lg:flex-row lg:items-start justify-between gap-8 sticky top-0"
         >
-          <div id="view__continent" className="">
-            <img src={activeContinentMap} alt="" width={490} height={490} />
-          </div>
+          <ActiveMap src={activeMap} />
 
-          <div id="view-countries">
+          <div id="see__countries">
             <div
               id="countries"
               className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-3 gap-4 w-full max-w-[700px]"
@@ -139,22 +113,21 @@ export const Preview = () => {
             </div>
 
             <div
-              id="more__country"
+              id="see__more__countries"
               className="flex justify-between w-full items-center"
             >
-              <h4 className="font-medium">
-                Total country:{" "}
+              <h4 className="font-medium flex gap-1">
+                Total countries:
                 <span className="text-[#D2A4A4] font-semibold">
-                  {totalContries}
+                  {totalCountries}
                 </span>
               </h4>
-              <button
-                className={`${poppins.className} flex items-center gap-2 px-8 py-4 cursor-pointer hover:bg-[#d2a4a43b] rounded-md transition-all duration-150 text-[#626262]`}
-                onClick={() => setLimiter(limiter + 9)}
-              >
-                <Circle size={16} weight="duotone" color="#D2A4A4" />
-                See more country
-              </button>
+              <Button onClick={() => {
+                if(countryLimiter >= totalCountries){
+                 return alert("limite")
+                }
+               return setCountryLimiter((prev) => prev + 9)
+              }} />
             </div>
           </div>
         </div>
