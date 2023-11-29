@@ -62,7 +62,7 @@ export const Preview = () => {
   const getCountries = () => {
     const reachedlimit = countryLimiter >= totalCountries;
     if (reachedlimit) {
-      toast("Search completed 😉", {
+      return toast("Search completed 😉", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
