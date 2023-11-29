@@ -15,6 +15,7 @@
     "phosphor": "^0.7.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-toastify": "^9.1.3",
     "styled-components": "^6.1.1"
   },
   "devDependencies": {

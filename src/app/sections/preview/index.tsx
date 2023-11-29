@@ -7,6 +7,7 @@ import { Button } from "@/components/button";
 import { ActiveMap } from "@/components/map";
 import Continent from "./continent";
 import { Input } from "@/components/input";
+import { toast } from "react-toastify";
 
 export const Preview = () => {
   const [continent, setContinent] = useState({ name: "Africa", id: 0 });
@@ -56,6 +57,23 @@ export const Preview = () => {
   const getTotalCountries = (capturedCountries: any) => {
     let sizeCapturedCountries = capturedCountries.length;
     setTotalCountries(sizeCapturedCountries);
+  };
+
+  const getCountries = () => {
+    const reachedlimit = countryLimiter >= totalCountries;
+    if (reachedlimit) {
+      toast("Search completed 😉", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    return setCountryLimiter((prev) => prev + 9);
   };
 
   useEffect(() => {
@@ -122,12 +140,7 @@ export const Preview = () => {
                   {totalCountries}
                 </span>
               </h4>
-              <Button onClick={() => {
-                if(countryLimiter >= totalCountries){
-                 return alert("limite")
-                }
-               return setCountryLimiter((prev) => prev + 9)
-              }} />
+              <Button onClick={getCountries} />
             </div>
           </div>
         </div>
