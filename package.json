@@ -11,6 +11,7 @@
   "dependencies": {
     "@phosphor-icons/react": "^2.0.15",
     "axios": "^1.6.2",
+    "framer-motion": "^10.6.8",
     "next": "14.0.3",
     "phosphor": "^0.7.1",
     "react": "^18",
