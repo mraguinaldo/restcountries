@@ -1,35 +1,45 @@
 import { API } from "@/services/data";
+import { PropsType } from "./interface";
 
-export const UseGetData = async () => {
+export const UseGetData = async ({ continent, currentTarget }: PropsType) => {
   const { data } = await API.get("/");
 
-  let filtered = data.filter((country: any) =>
-    country.name.common.includes("Angola")
-  );
+  let filteredCountries: any;
+  let capturedCountries: any = [];
 
-  let newCountriesCaptured: any = [];
-  filtered.map((country: any, index: number) => {
-    let conditionGenerateCountry = index < 9;
-    if (conditionGenerateCountry) {
+  const generateCountry = (countries: any) => {
+    countries.map((country: any) => {
       const { name, capital, flags } = country;
-      let countryCreated = {
+      let countryGenerated = {
         name: name.common,
         capital,
         flag: flags.png,
       };
 
-      newCountriesCaptured.push(countryCreated);
+      capturedCountries.push(countryGenerated);
+    });
+  };
+
+  const getCountries = () => {
+    let firstLetterCapitalized = currentTarget
+      .slice(0, 1)
+      .toUpperCase()
+      .concat(currentTarget.slice(1).toLowerCase());
+    let targetValue = firstLetterCapitalized;
+
+    if (targetValue.length === 0) {
+      filteredCountries = data.filter(
+        (country: any) => country.continents[0] === continent
+      );
+      return generateCountry(filteredCountries);
     }
-  });
+    filteredCountries = data.filter((country: any) =>
+      country.name.common.includes(targetValue)
+    );
+    return generateCountry(filteredCountries);
+  };
 
+  getCountries();
 
-
-  console.log(newCountriesCaptured)
-
-  return(
-    <h1>dsdsd</h1>
-  )
+  return await { capturedCountries };
 };
-
-
-

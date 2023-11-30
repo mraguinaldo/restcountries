@@ -5,8 +5,6 @@ import {
   InstagramLogo,
   YoutubeLogo,
 } from "@phosphor-icons/react";
-import {ReactNode} from 'react'
-
 
 interface PropsType{
   id: number,

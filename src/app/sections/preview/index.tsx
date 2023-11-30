@@ -1,6 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
-import { API } from "@/services/data";
+import { Suspense, useEffect, useState } from "react";
 import { Country } from "@/components/cards/country";
 import { CONTINENTS } from "./data";
 import { Button } from "@/components/button";
@@ -8,6 +7,7 @@ import { ActiveMap } from "@/components/map";
 import Continent from "./continent";
 import { Input } from "@/components/input";
 import { toast } from "react-toastify";
+import { UseGetData } from "@/hooks/usegetdata";
 
 export const Preview = () => {
   const [continent, setContinent] = useState({ name: "Africa", id: 0 });
@@ -16,10 +16,10 @@ export const Preview = () => {
   const [activeMap, setActiveMap] = useState(CONTINENTS[0].image);
   const [countries, setCountries] = useState([]);
   const [currentTarget, setCurrentTarget] = useState("");
-  const [countriesFound, setCountriesFound] = useState([]);
 
   const toggleContinent = (id: number, image: string, name: string) => {
     setContinent({ name, id });
+    setCurrentTarget("");
     changeMap(image);
   };
 
@@ -27,38 +27,9 @@ export const Preview = () => {
     setActiveMap(image);
   };
 
-  const captureCountries = (data: []) => {
-    let capturedCountries = data.filter(
-      (country: any) => country.continents[0] === continent.name
-    );
-
-    generateCountries(capturedCountries);
-  };
-
   const generateCountries = (capturedCountries: any) => {
-    let countriesCreated: any = [];
-    capturedCountries.map((country: any, index: number) => {
-      let conditionGenerateCountry = index < countryLimiter;
-      if (conditionGenerateCountry) {
-        const { name, capital, flags } = country;
-        let countryCreated = {
-          name: name.common,
-          capital,
-          flag: flags.png,
-        };
-
-        countriesCreated.push(countryCreated);
-      }
-
-      setCountries(countriesCreated);
-    });
-
-    getTotalCountries(capturedCountries);
-  };
-
-  const getTotalCountries = (capturedCountries: any) => {
-    let sizeCapturedCountries = capturedCountries.length;
-    setTotalCountries(sizeCapturedCountries);
+    setCountries(capturedCountries);
+    setTotalCountries(capturedCountries.length);
   };
 
   const getCountries = () => {
@@ -78,57 +49,21 @@ export const Preview = () => {
     return setCountryLimiter((prev) => prev + 9);
   };
 
-  let filteredCountries = [];
-
   useEffect(() => {
-    const fetchDataAPI = async () => {
-      const { data } = await API.get("/");
-      captureCountries(data);
-
-      filteredCountries = data.filter((country: any) =>
-        country.name.common.includes(
-          currentTarget
-            .slice(0, 1)
-            .toLocaleUpperCase()
-            .concat(currentTarget.slice(1).toLowerCase())
-        )
-      );
-
-      let countriesCreated: any = [];
-      filteredCountries.map((country: any, index: number) => {
-        let conditionGenerateCountry = index < countryLimiter;
-        if (conditionGenerateCountry) {
-          const { name, capital, flags } = country;
-          let countryCreated = {
-            name: name.common,
-            capital,
-            flag: flags.png,
-          };
-
-          currentTarget != ""
-            ? countriesCreated.push(countryCreated)
-            : (countriesCreated = []);
-        }
+    const fetchData = async () => {
+      let { capturedCountries } = await UseGetData({
+        continent: continent.name,
+        currentTarget: currentTarget,
       });
-      setCountriesFound(countriesCreated);
+      generateCountries(capturedCountries);
     };
 
-    fetchDataAPI();
-  }, [currentTarget]);
-
-  useEffect(() => {
-    const fetchDataAPI = async () => {
-      const { data } = await API.get("/");
-      captureCountries(data);
-    };
-
-    setCurrentTarget("");
-    fetchDataAPI();
-  }, [continent, countryLimiter]);
+    fetchData();
+  }, [continent, countryLimiter, currentTarget]);
 
   return (
     <section className="bg-white py-12 lg:py-32">
-      <div className="limiter flex flex-col gap-6 sm:gap-28">
+      <div className="limiter flex flex-col gap-6 sm:gap-14">
         <header className="flex sm:flex-col  justify-between items-start sm:items-center gap-12">
           <div
             id="continents"
@@ -163,19 +98,9 @@ export const Preview = () => {
               id="countries"
               className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-3 gap-4 w-full max-w-[700px]"
             >
-              {countriesFound.length > 0
-                ? countriesFound.map(
-                    ({ name, capital, flag }, index: number) => (
-                      <Country
-                        key={index}
-                        id={index}
-                        name={name}
-                        capital={capital}
-                        flag={flag}
-                      />
-                    )
-                  )
-                : countries.map(({ name, capital, flag }, index: number) => (
+              {countries.map(
+                ({ name, capital, flag }, index: number) =>
+                  index < countryLimiter && (
                     <Country
                       key={index}
                       id={index}
@@ -183,7 +108,8 @@ export const Preview = () => {
                       capital={capital}
                       flag={flag}
                     />
-                  ))}
+                  )
+              )}
             </div>
 
             <div
@@ -196,7 +122,7 @@ export const Preview = () => {
                   {totalCountries}
                 </span>
               </h4>
-              <Button onClick={getCountries} />
+              <Button content="See more countries" onClick={getCountries} />
             </div>
           </div>
         </div>

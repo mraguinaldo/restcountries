@@ -1,6 +1,4 @@
-interface PropsType {
-  src: string;
-}
+import { PropsType } from "./interface";
 
 export const ActiveMap = ({ src }: PropsType) => {
   return (

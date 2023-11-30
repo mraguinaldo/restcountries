@@ -1,8 +1,5 @@
 import { MagnifyingGlass } from "@phosphor-icons/react";
-
-interface PropsType {
-  onChange: any;
-}
+import { PropsType } from "./interface";
 
 export const Input = ({ onChange }: PropsType) => {
   return (

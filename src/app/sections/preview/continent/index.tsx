@@ -1,12 +1,6 @@
 import { poppins } from "@/app/fonts";
 import { motion } from "framer-motion";
-
-interface PropsType {
-  active: boolean;
-  name: string;
-  id: number;
-  onClick: () => void;
-}
+import { PropsType } from "./interface";
 
 const Continent = ({ onClick, active, name, id }: PropsType) => {
   return (
