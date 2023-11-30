@@ -15,6 +15,8 @@ export const Preview = () => {
   const [totalCountries, setTotalCountries] = useState(0);
   const [activeMap, setActiveMap] = useState(CONTINENTS[0].image);
   const [countries, setCountries] = useState([]);
+  const [currentTarget, setCurrentTarget] = useState("");
+  const [countriesFound, setCountriesFound] = useState([]);
 
   const toggleContinent = (id: number, image: string, name: string) => {
     setContinent({ name, id });
@@ -76,17 +78,43 @@ export const Preview = () => {
     return setCountryLimiter((prev) => prev + 9);
   };
 
-  let filtered: any;
+  let filteredCountries = [];
 
-  const getDataApi = async (currentTarget: string) => {
-    const { data } = await API.get("/");
+  useEffect(() => {
+    const fetchDataAPI = async () => {
+      const { data } = await API.get("/");
+      captureCountries(data);
 
-    filtered = data.filter((country: any) =>
-      country.name.common.includes(currentTarget)
-    );
+      filteredCountries = data.filter((country: any) =>
+        country.name.common.includes(
+          currentTarget
+            .slice(0, 1)
+            .toLocaleUpperCase()
+            .concat(currentTarget.slice(1).toLowerCase())
+        )
+      );
 
-    console.log(filtered);
-  };
+      let countriesCreated: any = [];
+      filteredCountries.map((country: any, index: number) => {
+        let conditionGenerateCountry = index < countryLimiter;
+        if (conditionGenerateCountry) {
+          const { name, capital, flags } = country;
+          let countryCreated = {
+            name: name.common,
+            capital,
+            flag: flags.png,
+          };
+
+          currentTarget != ""
+            ? countriesCreated.push(countryCreated)
+            : (countriesCreated = []);
+        }
+      });
+      setCountriesFound(countriesCreated);
+    };
+
+    fetchDataAPI();
+  }, [currentTarget]);
 
   useEffect(() => {
     const fetchDataAPI = async () => {
@@ -94,6 +122,7 @@ export const Preview = () => {
       captureCountries(data);
     };
 
+    setCurrentTarget("");
     fetchDataAPI();
   }, [continent, countryLimiter]);
 
@@ -118,7 +147,9 @@ export const Preview = () => {
               />
             ))}
           </div>
-          <Input onChange={(e: any) => getDataApi(e.currentTarget.value)} />
+          <Input
+            onChange={(e: any) => setCurrentTarget(e.currentTarget.value)}
+          />
         </header>
 
         <div
@@ -132,20 +163,32 @@ export const Preview = () => {
               id="countries"
               className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-3 gap-4 w-full max-w-[700px]"
             >
-              {countries.map(({ name, capital, flag }, index: number) => (
-                <Country
-                  key={index}
-                  id={index}
-                  name={name}
-                  capital={capital}
-                  flag={flag}
-                />
-              ))}
+              {countriesFound.length > 0
+                ? countriesFound.map(
+                    ({ name, capital, flag }, index: number) => (
+                      <Country
+                        key={index}
+                        id={index}
+                        name={name}
+                        capital={capital}
+                        flag={flag}
+                      />
+                    )
+                  )
+                : countries.map(({ name, capital, flag }, index: number) => (
+                    <Country
+                      key={index}
+                      id={index}
+                      name={name}
+                      capital={capital}
+                      flag={flag}
+                    />
+                  ))}
             </div>
 
             <div
               id="see__more__countries"
-              className="flex justify-between w-full items-center"
+              className="flex flex-col-reverse justify-center gap-4 sm:flex-row sm:justify-between w-full items-center"
             >
               <h4 className="font-medium flex gap-1">
                 Total countries:

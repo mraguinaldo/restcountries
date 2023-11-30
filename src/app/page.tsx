@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <ToastContainer />
-      <main>
+      <main className="overflow-x-hidden">
         <Hero />
         <Preview />
       </main>
