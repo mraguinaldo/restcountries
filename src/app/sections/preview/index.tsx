@@ -8,6 +8,7 @@ import Continent from "./continent";
 import { Input } from "@/components/input";
 import { toast } from "react-toastify";
 import { UseGetData } from "@/hooks/usegetdata";
+import { Modal } from "@/components/modal";
 
 export const Preview = () => {
   const [continent, setContinent] = useState({ name: "Africa", id: 0 });
@@ -127,6 +128,7 @@ export const Preview = () => {
           </div>
         </div>
       </div>
+      <Modal showModal={true} />
     </section>
   );
 };

@@ -13,6 +13,15 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      animation: {
+        'fade_up': 'fadeUp 0.3s linear',
+      },
+      keyframes: {
+        fadeUp: {
+          '0%': { transform: 'translateY(32px)' },
+          '100%': { transform: 'translateY(0)' },
+        }
+      }
     },
   },
   plugins: [],
