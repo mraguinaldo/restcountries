@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Country } from "@/components/cards/country";
 import { CONTINENTS } from "./data";
 import { Button } from "@/components/button";
@@ -9,6 +9,7 @@ import { Input } from "@/components/input";
 import { toast } from "react-toastify";
 import { UseGetData } from "@/hooks/usegetdata";
 import { Modal } from "@/components/modal";
+import { API } from "@/services/data";
 
 export const Preview = () => {
   const [continent, setContinent] = useState({ name: "Africa", id: 0 });
@@ -17,7 +18,9 @@ export const Preview = () => {
   const [activeMap, setActiveMap] = useState(CONTINENTS[0].image);
   const [countries, setCountries] = useState([]);
   const [currentTarget, setCurrentTarget] = useState("");
-  const [openModal, setOpenModal] = useState(false) 
+  const [openModal, setOpenModal] = useState(false)
+  const [country, setCountry] = useState('')
+  const [createdCountry, setCreatedCountry] = useState<any>()
 
   const toggleContinent = (id: number, image: string, name: string) => {
     setContinent({ name, id });
@@ -55,7 +58,51 @@ export const Preview = () => {
     setOpenModal(false)
   }
 
-  window.addEventListener('scroll', handlecloseModal)
+  // window.addEventListener('scroll', handlecloseModal)
+
+  const searchCountryData = async(countryName: string) => {
+    setOpenModal(true)
+    const { data } =  await API.get('/')
+    const filteredCountry = data.filter((country: any)=> country.name.common === countryName)
+
+    let criado;
+
+    filteredCountry.map((country: any)=>{
+      const {
+        name, 
+        capital, 
+        continents, 
+        maps, 
+        translations, 
+        languages, 
+        flag, 
+        area, 
+        population, 
+        currencies } = country
+
+    criado = {
+        name: name.common,
+        capital: capital[0],
+        continent: continents[0],
+        maps: Object.entries(maps).map(([mapName, url])=> ({mapName, url})),
+        translations: Object.entries(translations)
+        .map(([country, translate]: any)=> (translate.official)),
+        languages: Object.entries(languages).map(([country, language])=> (language)),
+        flag,
+        area,
+        population,
+        currency: Object.entries(currencies)
+        .map(([name, currency]: any)=> (currency.symbol))
+      }
+      
+    })
+
+    return setCreatedCountry(criado)
+  }
+  
+  useEffect(() => {
+    searchCountryData(country)
+  }, [country])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,7 +162,7 @@ export const Preview = () => {
                       name={name}
                       capital={capital}
                       flag={flag}
-                      onClick={()=> setOpenModal(true)}
+                      onClick={()=> setCountry(name)}
                     />
                   )
               )}
@@ -136,7 +183,7 @@ export const Preview = () => {
           </div>
         </div>
       </div>
-      <Modal showModal={openModal} onClick={()=> setOpenModal(false)}/>
+      <Modal showModal={openModal} onClick={()=> setOpenModal(false)} data={createdCountry}/>
     </section>
   );
 };
