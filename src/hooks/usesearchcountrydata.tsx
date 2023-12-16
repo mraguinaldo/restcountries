@@ -37,7 +37,5 @@ export const UseSearchCountryData =  async(countryName: string) => {
       
     })
 
-    console.log(createdCountry)
-
     return await { createdCountry }
 }
