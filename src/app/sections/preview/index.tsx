@@ -9,7 +9,7 @@ import { Input } from "@/components/input";
 import { toast } from "react-toastify";
 import { UseGetData } from "@/hooks/usegetdata";
 import { Modal } from "@/components/modal";
-import { API } from "@/services/data";
+import { UseSearchCountryData } from "@/hooks/usesearchcountrydata";
 
 export const Preview = () => {
   const [continent, setContinent] = useState({ name: "Africa", id: 0 });
@@ -19,7 +19,7 @@ export const Preview = () => {
   const [countries, setCountries] = useState([]);
   const [currentTarget, setCurrentTarget] = useState("");
   const [openModal, setOpenModal] = useState(false)
-  const [country, setCountry] = useState('')
+  const [country, setCountry] = useState<string>()
   const [createdCountry, setCreatedCountry] = useState<any>()
 
   const toggleContinent = (id: number, image: string, name: string) => {
@@ -60,43 +60,9 @@ export const Preview = () => {
 
   // window.addEventListener('scroll', handlecloseModal)
 
-  const searchCountryData = async(countryName: string) => {
-    const { data } =  await API.get('/')
-    const filteredCountry = data.filter((country: any)=> country.name.common === countryName)
-
-    let criado;
-
-    filteredCountry.map((country: any)=>{
-      const {
-        name, 
-        capital, 
-        continents, 
-        maps, 
-        translations, 
-        languages, 
-        flag, 
-        area, 
-        population, 
-        currencies } = country
-
-    criado = {
-        name: name.common,
-        capital: capital[0],
-        continent: continents[0],
-        maps: Object.entries(maps).map(([mapName, url])=> ({mapName, url})),
-        translations: Object.entries(translations)
-        .map(([country, translate]: any)=> (translate.official)),
-        languages: Object.entries(languages).map(([country, language])=> (language)),
-        flag,
-        area,
-        population,
-        currency: Object.entries(currencies)
-        .map(([name, currency]: any)=> (currency.symbol))
-      }
-      
-    })
-
-    return setCreatedCountry(criado)
+  const searchCountryData = async(countryName: any) => {
+    const {  createdCountry } = await UseSearchCountryData(countryName)
+    setCreatedCountry(createdCountry)
   }
   
   useEffect(() => {

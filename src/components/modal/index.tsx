@@ -16,28 +16,26 @@ interface PropsType{
 export const Modal =({ showModal, onClick, data }: PropsType) => {
   const [showContent, setShowContent] = useState(100)
 
-  console.log(data)
-
- const accordionsCountry = [
-  {
-    id: 0, 
-    headerContent: 'Maps', 
-    children: data?.maps,
-    Icon: MapPin
-  },
-  {
-    id: 1, 
-    headerContent: 'Translations', 
-    children: data?.translations,
-    Icon: GlobeStand
-  },
-  {
-    id: 2, 
-    headerContent: 'Languages', 
-    children: data?.languages,
-    Icon: Translate 
-  }
- ]
+  const accordionsCountry = [
+    {
+      id: 0, 
+      headerContent: 'Maps', 
+      children: data?.maps,
+      Icon: MapPin
+    },
+    {
+      id: 1, 
+      headerContent: 'Translations', 
+      children: data?.translations,
+      Icon: GlobeStand
+    },
+    {
+      id: 2, 
+      headerContent: 'Languages', 
+      children: data?.languages,
+      Icon: Translate 
+    }
+  ]
 
   const aboutCountry = [
     { id: 0, about: 'Name', content: data?.name},
@@ -86,7 +84,7 @@ export const Modal =({ showModal, onClick, data }: PropsType) => {
             </span>
           </div>
         </div>
-        <div id="accordions_area" className="w-full max-w-md bg-gray-100 p-2 
+        <div id="accordions_area" className="w-full max-w-md bg-gray-100 px-4 pt-6 pb-2 
           rounded-xl flex flex-col"
         >
         {accordionsCountry.map(({id, headerContent, children, Icon})=>(

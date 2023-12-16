@@ -6,7 +6,7 @@ export const Footer = () => {
     <footer className="bg-white py-6">
       <div className="limiter flex flex-col gap-8 sm:flex-row justify-between items-center">
         <div id="logo">
-          <h4 className="text-lg">OCTOPLUS DEVELOPERS</h4>
+          <h4 className="text-lg">MR AGUINALDO</h4>
         </div>
         <nav id="social__media" className="flex h-7 gap-4 items-center">
           {SOCIALMEDIA.map(({ id, Icon, name, externLink }) => (
