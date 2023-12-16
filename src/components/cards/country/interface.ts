@@ -3,4 +3,5 @@ export interface PropsType {
   flag: string;
   name: string;
   capital: string;
+  onClick: ()=> void
 }

@@ -17,6 +17,7 @@ export const Preview = () => {
   const [activeMap, setActiveMap] = useState(CONTINENTS[0].image);
   const [countries, setCountries] = useState([]);
   const [currentTarget, setCurrentTarget] = useState("");
+  const [openModal, setOpenModal] = useState(false) 
 
   const toggleContinent = (id: number, image: string, name: string) => {
     setContinent({ name, id });
@@ -49,6 +50,12 @@ export const Preview = () => {
     }
     return setCountryLimiter((prev) => prev + 9);
   };
+
+  const handlecloseModal = () => {
+    setOpenModal(false)
+  }
+
+  window.addEventListener('scroll', handlecloseModal)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,6 +115,7 @@ export const Preview = () => {
                       name={name}
                       capital={capital}
                       flag={flag}
+                      onClick={()=> setOpenModal(true)}
                     />
                   )
               )}
@@ -128,7 +136,7 @@ export const Preview = () => {
           </div>
         </div>
       </div>
-      <Modal showModal={true} />
+      <Modal showModal={openModal} onClick={()=> setOpenModal(false)}/>
     </section>
   );
 };

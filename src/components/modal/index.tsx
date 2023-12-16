@@ -1,13 +1,58 @@
+/* eslint-disable react/no-children-prop */
 /* eslint-disable @next/next/no-img-element */
 
 import { poppins } from "@/app/fonts"
-import { CaretDown } from "@phosphor-icons/react";
+import { CountryDescription } from "./countrydescription";
+import { Accordion } from "./accordion";
+import { useState } from "react";
+import { X } from "@phosphor-icons/react";
 
 interface PropsType{
-  showModal: boolean
+  showModal: boolean,
+  onClick: ()=> void
 }
 
-export const Modal =({ showModal }: PropsType) => {
+export const Modal =({ showModal, onClick }: PropsType) => {
+  const [showContent, setShowContent] = useState(100)
+
+ const accordionsCountry = [
+  {
+    id: 0, 
+    headerContent: 'Maps', 
+    children: [ 'Google Maps', 'Aguinaldo Maps']
+  },
+  {
+    id: 1, 
+    headerContent: 'Translations', 
+    children: [ 'Angola', 'Luanda']
+  },
+  {
+    id: 2, 
+    headerContent: 'Languages', 
+    children: [ 'Portugese', 'Ingles', 'Francês']
+  }
+ ]
+
+  const aboutCountry = [
+    { id: 0, about: 'Nome', content: 'Angola'},
+    { id: 1, about: 'Capital', content: 'Luanda'},
+  ]
+
+  const othersInformations = [
+    { id: 0, about: 'Area', content: 2780400},
+    { id: 1, about: 'Population', content: 45376763},
+    { id: 2, about: 'Currency', content: 'AOA'},
+  ]
+
+  const hideChildren = (id: number) => {
+    const isDisplayed = id === showContent
+
+    if(isDisplayed){
+      return setShowContent(100)
+    }
+    return setShowContent(id)
+  }
+
   return(
     <div id="main" className={`fixed top-12 max-w-xs right-8 w-full animate-fade_up 
       ${showModal ? 'flex' : 'hidden'}
@@ -15,17 +60,19 @@ export const Modal =({ showModal }: PropsType) => {
       <div className="container w-full max-w-xs bg-white shadow-md 
         p-6 rounded-2xl flex flex-col gap-4"
       >
+        <button id="close_modal" 
+          className="w-full max-w-[30px] h-24px flex items-center justify-center
+          rounded-full p-1 cursor-pointer duration-200 transition-all hover:bg-[#41414170]" 
+          onClick={onClick}
+        >
+          <X size={22} color='#1c1c1c'/>
+        </button>
         <div id="top_area" className="flex justify-between items-start">
           <div id="about_country" className="flex flex-col gap-2 items-start">
             <img src="" alt="flag" />
-            <span className={`${poppins.className} font-medium text-gray-500`}>
-              <strong className='text-gray-600 font-bold'>Name: </strong> 
-              Angola
-            </span>
-            <span className={`${poppins.className} font-medium text-gray-500`}>
-              <strong className='text-gray-600 font-bold'>Capital: </strong> 
-              Luanda
-            </span>
+            {aboutCountry.map(({id, about, content})=>(
+              <CountryDescription key={id} about={about} content={content}/>
+            ))}
           </div>
           <div id="about_continent">
             <span className={`${poppins.className} font-semibold text-gray-700`}>
@@ -33,35 +80,23 @@ export const Modal =({ showModal }: PropsType) => {
             </span>
           </div>
         </div>
-        <div id="maps_area" className="w-full max-w-xs bg-gray-100 p-2 
-          rounded-xl gap-2 flex flex-col"
+        <div id="accordions_area" className="w-full max-w-xs bg-gray-100 p-2 
+          rounded-xl flex flex-col"
         >
-          <button className="flex justify-between w-full text-gray-700" onClick={()=> alert('Clicou')}>
-            Maps
-            <CaretDown size={24} color="#212121"/>
-          </button>
-          <button className="flex justify-between w-full text-gray-700" onClick={()=> alert('Clicou')}>
-            Translations
-            <CaretDown size={24} color="#212121"/>
-          </button>
-          <button className="flex justify-between w-full text-gray-700" onClick={()=> alert('Clicou')}>
-            Languages
-            <CaretDown size={24} color="#212121"/>
-          </button>
+        {accordionsCountry.map(({id, headerContent, children})=>(
+          <Accordion 
+            key={id} 
+            headerContent={headerContent} 
+            onClick={()=> hideChildren(id)}
+            showContent={id === showContent} 
+            children={children}/>
+        ))}
+
         </div>
         <div id="others__informations" className='flex flex-col gap-2'>
-          <span className={`${poppins.className} font-normal text-gray-700`}>
-            <strong className="font-bold">Area: </strong> 
-            2780400
-          </span>
-          <span className={`${poppins.className} font-semibold text-gray-700`}>
-            <strong className="font-bold">Population: </strong>
-            45376763
-          </span>
-          <span className={`${poppins.className} font-semibold text-gray-700`}>
-            <strong className="font-bold">Currency: </strong>
-            AOA
-          </span>
+         {othersInformations.map(({id, about, content})=>(
+            <CountryDescription key={id} about={about} content={content}/>
+         ))}
         </div>
       </div>
     </div>

@@ -15,11 +15,29 @@ const config: Config = {
       },
       animation: {
         'fade_up': 'fadeUp 0.3s linear',
+        'arrowUp': 'arrowUp 0.3s forwards',
+        'arrowDown': 'arrowDown 0.3s forwards',
       },
       keyframes: {
         fadeUp: {
           '0%': { transform: 'translateY(32px)' },
           '100%': { transform: 'translateY(0)' },
+        },
+        arrowDown: {
+          '0%': {
+            transform: 'rotate(0)',
+          },
+          '100%': {
+            transform: 'rotate(180deg)',
+          }
+        },
+        arrowUp: {
+          '100%': {
+            transform: 'rotate(0)',
+          },
+          '0%': {
+            transform: 'rotate(180deg)',
+          },
         }
       }
     },
