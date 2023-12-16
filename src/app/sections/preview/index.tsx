@@ -61,7 +61,6 @@ export const Preview = () => {
   // window.addEventListener('scroll', handlecloseModal)
 
   const searchCountryData = async(countryName: string) => {
-    setOpenModal(true)
     const { data } =  await API.get('/')
     const filteredCountry = data.filter((country: any)=> country.name.common === countryName)
 
@@ -162,7 +161,11 @@ export const Preview = () => {
                       name={name}
                       capital={capital}
                       flag={flag}
-                      onClick={()=> setCountry(name)}
+                      onClick={()=> {
+                        setOpenModal(true)
+                        setCountry(name)
+                        }
+                      }
                     />
                   )
               )}
