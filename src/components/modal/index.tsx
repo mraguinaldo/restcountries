@@ -6,12 +6,8 @@ import { CountryDescription } from "./countrydescription";
 import { Accordion } from "./accordion";
 import { useState } from "react";
 import { X, MapPin, Translate, GlobeStand } from "@phosphor-icons/react";
+import { PropsType } from "./interfaces";
 
-interface PropsType{
-  showModal: boolean,
-  onClick: ()=> void
-  data: any
-}
 
 export const Modal =({ showModal, onClick, data }: PropsType) => {
   const [showContent, setShowContent] = useState(100)
@@ -45,7 +41,7 @@ export const Modal =({ showModal, onClick, data }: PropsType) => {
   const othersInformations = [
     { id: 0, about: 'Area', content: `${data?.area} km²`},
     { id: 1, about: 'Population', content: data?.population},
-    { id: 2, about: 'Currency', content: data?.currency[0]},
+    { id: 2, about: 'Currency', content: data?.currency},
   ]
 
   const hideChildren = (id: number) => {
@@ -101,7 +97,7 @@ export const Modal =({ showModal, onClick, data }: PropsType) => {
         </div>
         <div id="others__informations" className='flex flex-col gap-2'>
           {othersInformations.map(({id, about, content})=>(
-              <CountryDescription key={id} about={about} content={content}/>
+            <CountryDescription key={id} about={about} content={content}/>
           ))}
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Country } from "@/components/cards/country";
-import { CONTINENTS } from "./data";
+import { CONTINENTS, initialValues } from "./data";
 import { Button } from "@/components/button";
 import { ActiveMap } from "@/components/map";
 import Continent from "./continent";
@@ -10,59 +10,107 @@ import { toast } from "react-toastify";
 import { UseGetData } from "@/hooks/usegetdata";
 import { Modal } from "@/components/modal";
 import { UseSearchCountryData } from "@/hooks/usesearchcountrydata";
+import { PropsTypeReducer } from "./interface";
+import { actions } from "./actions";
+
+const reducer =(state: any, action: any) =>{
+
+  const { 
+    id, 
+    name,
+    map, 
+    limiter, 
+    totalCountries, 
+    target, 
+    createdCountry } = action
+
+  switch(action.type){
+    case actions.toggleContinent: 
+    return {
+      ...state,
+      continent: { id, name, map },
+      countryLimiter: 9
+    }
+    case actions.getCountries:
+      return{
+        ...state,
+        countryLimiter: state.countryLimiter + limiter
+      }
+    case actions.generateCountries:
+      return{
+        ...state,
+        totalCountries: totalCountries
+      }
+    case actions.searchCountries:
+      return{
+        ...state,
+        currentTarget: target
+      }
+    case actions.searchCountryData:
+      return{
+        ...state,
+        countryDataFound: createdCountry
+      }
+  }
+}
 
 export const Preview = () => {
-  const [continent, setContinent] = useState({ name: "Africa", id: 0 });
-  const [countryLimiter, setCountryLimiter] = useState(9);
-  const [totalCountries, setTotalCountries] = useState(0);
-  const [activeMap, setActiveMap] = useState(CONTINENTS[0].image);
   const [countries, setCountries] = useState([]);
-  const [currentTarget, setCurrentTarget] = useState("");
   const [openModal, setOpenModal] = useState(false)
   const [country, setCountry] = useState<string>()
-  const [createdCountry, setCreatedCountry] = useState<any>()
 
-  const toggleContinent = (id: number, image: string, name: string) => {
-    setContinent({ name, id });
-    setCurrentTarget("");
-    changeMap(image);
-  };
+  const [state, dispatch] = useReducer(reducer, initialValues)
 
-  const changeMap = (image: string) => {
-    setActiveMap(image);
+  const {
+    continent,
+    countryLimiter,
+    totalCountries,
+    currentTarget,
+    countryDataFound
+  } = state as PropsTypeReducer
+
+  const toggleContinent = (id: number, name: string, map: string) => {
+    dispatch({type: actions.toggleContinent, id, name, map})
   };
 
   const generateCountries = (capturedCountries: any) => {
     setCountries(capturedCountries);
-    setTotalCountries(capturedCountries.length);
+
+   let totalCountries = capturedCountries.length
+    dispatch({type: actions.generateCountries, totalCountries })
   };
+
+
+  const searchCountry = (e: any) => {
+    let target = e.currentTarget.value
+    dispatch({type: actions.searchCountries, target})
+  }
 
   const getCountries = () => {
     const reachedlimit = countryLimiter >= totalCountries;
+    const limiter = 9
     if (reachedlimit) {
-      return toast("Search completed 😉", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      return showToast('Search completed 😉')
     }
-    return setCountryLimiter((prev) => prev + 9);
+    return  dispatch({type: actions.getCountries, limiter})
   };
 
-  const handlecloseModal = () => {
-    setOpenModal(false)
+  const showToast = ( message:string ) => {
+    toast(message, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   }
-
-  // window.addEventListener('scroll', handlecloseModal)
 
   const searchCountryData = async(countryName: any) => {
     const {  createdCountry } = await UseSearchCountryData(countryName)
-    setCreatedCountry(createdCountry)
+    dispatch({type: actions.searchCountryData, createdCountry})
   }
   
   useEffect(() => {
@@ -79,7 +127,7 @@ export const Preview = () => {
     };
 
     fetchData();
-  }, [continent, countryLimiter, currentTarget]);
+  }, [continent.name, countryLimiter, currentTarget]);
 
   return (
     <section className="bg-white py-12 lg:py-32">
@@ -89,21 +137,20 @@ export const Preview = () => {
             id="continents"
             className="flex flex-col sm:flex-row  gap-4 sm:items-center sm:gap-8"
           >
-            {CONTINENTS.map(({ id, name, image }) => (
+            {CONTINENTS.map(({ id, name, map }) => (
               <Continent
                 key={id}
                 id={id}
                 name={name}
                 active={id === continent.id}
                 onClick={() => {
-                  toggleContinent(id, image, name);
-                  setCountryLimiter(9);
+                  toggleContinent(id, name, map);
                 }}
               />
             ))}
           </div>
           <Input
-            onChange={(e: any) => setCurrentTarget(e.currentTarget.value)}
+            onChange={(e: any) => searchCountry(e)}
           />
         </header>
 
@@ -111,7 +158,7 @@ export const Preview = () => {
           id="preview"
           className="flex flex-col items-center lg:flex-row lg:items-start justify-between gap-8 sticky top-0"
         >
-          <ActiveMap src={activeMap} />
+          <ActiveMap src={continent.map} />
 
           <div id="see__countries">
             <div
@@ -152,7 +199,7 @@ export const Preview = () => {
           </div>
         </div>
       </div>
-      <Modal showModal={openModal} onClick={()=> setOpenModal(false)} data={createdCountry}/>
+      <Modal showModal={openModal} onClick={()=> setOpenModal(false)} data={countryDataFound}/>
     </section>
   );
 };
