@@ -13,7 +13,7 @@ import { UseSearchCountryData } from "@/hooks/usesearchcountrydata";
 import { PropsTypeReducer } from "./interface";
 import { actions } from "./actions";
 
-const reducer =(state: any, action: any) =>{
+const reducer =(state: any, action: any) => {
 
   const { 
     id, 
@@ -57,7 +57,7 @@ const reducer =(state: any, action: any) =>{
 export const Preview = () => {
   const [countries, setCountries] = useState([]);
   const [openModal, setOpenModal] = useState(false)
-  const [country, setCountry] = useState<string>()
+  const [country, setCountry] = useState('')
 
   const [state, dispatch] = useReducer(reducer, initialValues)
 
@@ -82,7 +82,7 @@ export const Preview = () => {
 
 
   const searchCountry = (e: any) => {
-    let target = e.currentTarget.value
+    const target = e.currentTarget.value
     dispatch({type: actions.searchCountries, target})
   }
 
@@ -108,7 +108,7 @@ export const Preview = () => {
     });
   }
 
-  const searchCountryData = async(countryName: any) => {
+  const searchCountryData = async(countryName: string) => {
     const {  createdCountry } = await UseSearchCountryData(countryName)
     dispatch({type: actions.searchCountryData, createdCountry})
   }

@@ -3,3 +3,8 @@ export interface PropsType{
   onClick: ()=> void
   data: any
 }
+
+export interface PropsTypeCountryDescription{
+  about: string,
+  content: string | number
+}

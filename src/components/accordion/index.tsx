@@ -1,13 +1,5 @@
 import { CaretUp } from "@phosphor-icons/react"
-import { ReactNode } from "react"
-
-interface PropsType{
-  onClick: ()=> void,
-  showContent: boolean,
-  headerContent: string,
-  children: any,
-  Icon: ReactNode
-}
+import { PropsType } from "./interface"
 
 export const Accordion = ({ onClick, showContent, headerContent, children, Icon }: PropsType) => {
   return(

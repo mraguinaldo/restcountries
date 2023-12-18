@@ -3,11 +3,10 @@
 
 import { poppins } from "@/app/fonts"
 import { CountryDescription } from "./countrydescription";
-import { Accordion } from "./accordion";
 import { useState } from "react";
 import { X, MapPin, Translate, GlobeStand } from "@phosphor-icons/react";
 import { PropsType } from "./interfaces";
-
+import { Accordion } from "../accordion";
 
 export const Modal =({ showModal, onClick, data }: PropsType) => {
   const [showContent, setShowContent] = useState(100)
