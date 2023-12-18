@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { PropsType } from "./interface";
 
 export const ActiveMap = ({ src }: PropsType) => {
