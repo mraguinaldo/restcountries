@@ -53,10 +53,10 @@ export const Modal =({ showModal, onClick, data }: PropsType) => {
   }
 
   return(
-    <div id="main" className={`fixed top-12 max-w-sm sm:max-w-md right-1 sm:right-8 w-full          animate-fade_up 
+    <div id="main" className={`fixed top-12 w-full p-2 animate-fade_up 
       ${showModal ? 'flex' : 'hidden'}
     `}>
-      <div className="container w-full max-w-md bg-white shadow-md 
+      <div className="container m-auto lg:mr-20 w-full max-w-md bg-white shadow-md 
         p-6 rounded-2xl flex flex-col gap-4"
       >
         <button id="close_modal" 

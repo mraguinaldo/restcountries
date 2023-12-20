@@ -10,7 +10,7 @@ export const Country = ({ id, flag, name, capital, onClick }: PropsType) => {
       transition={{ duration: 0.3, delay: 0.2 }}
       key={id}
       onClick={onClick}
-      className="flex flex-col p-4 gap-2 items-start hover:bg-[#b8b8b838] rounded-md transition-all duration-300 cursor-pointer sm:hover:scale-110 w-52"
+      className="flex flex-col p-4 gap-2 items-start hover:bg-[#b8b8b838] rounded-md transition-all duration-300 cursor-pointer sm:hover:scale-110 w-full"
     >
       <div id="flag">
         <img src={flag} alt={name} className="w-24 h-14" />

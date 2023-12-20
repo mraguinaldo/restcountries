@@ -12,47 +12,7 @@ import { Modal } from "@/components/modal";
 import { UseSearchCountryData } from "@/hooks/usesearchcountrydata";
 import { PropsTypeReducer } from "./interface";
 import { actions } from "./actions";
-
-const reducer =(state: any, action: any) => {
-
-  const { 
-    id, 
-    name,
-    map, 
-    limiter, 
-    totalCountries, 
-    target, 
-    createdCountry } = action
-
-  switch(action.type){
-    case actions.toggleContinent: 
-    return {
-      ...state,
-      continent: { id, name, map },
-      countryLimiter: 9
-    }
-    case actions.getCountries:
-      return{
-        ...state,
-        countryLimiter: state.countryLimiter + limiter
-      }
-    case actions.generateCountries:
-      return{
-        ...state,
-        totalCountries: totalCountries
-      }
-    case actions.searchCountries:
-      return{
-        ...state,
-        currentTarget: target
-      }
-    case actions.searchCountryData:
-      return{
-        ...state,
-        countryDataFound: createdCountry
-      }
-  }
-}
+import { reducer } from "./reducer";
 
 export const Preview = () => {
   const [countries, setCountries] = useState([]);
@@ -132,7 +92,7 @@ export const Preview = () => {
   return (
     <section className="bg-white py-12 lg:py-32">
       <div className="limiter flex flex-col gap-6 sm:gap-14">
-        <header className="flex sm:flex-col  justify-between items-start sm:items-center gap-12">
+        <header className="flex sm:flex-col justify-between items-start sm:items-center gap-12">
           <div
             id="continents"
             className="flex flex-col sm:flex-row  gap-4 sm:items-center sm:gap-8"
