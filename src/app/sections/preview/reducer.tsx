@@ -2,41 +2,34 @@ import { actions } from "./actions"
 
 export const reducer =(state: any, action: any) => {
 
-  const { 
-    id, 
-    name,
-    map, 
-    limiter, 
-    totalCountries, 
-    target, 
-    createdCountry } = action
+  const { payload } = action
 
   switch(action.type){
     case actions.toggleContinent: 
     return {
       ...state,
-      continent: { id, name, map },
+      continent: payload,
       countryLimiter: 9
     }
     case actions.getCountries:
       return{
         ...state,
-        countryLimiter: state.countryLimiter + limiter
+        countryLimiter: state.countryLimiter + payload
       }
     case actions.generateCountries:
       return{
         ...state,
-        totalCountries: totalCountries
+        totalCountries: payload
       }
     case actions.searchCountries:
       return{
         ...state,
-        currentTarget: target
+        currentTarget: payload
       }
     case actions.searchCountryData:
       return{
         ...state,
-        countryDataFound: createdCountry
+        countryDataFound: payload
       }
   }
 }

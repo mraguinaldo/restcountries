@@ -30,20 +30,20 @@ export const Preview = () => {
   } = state as PropsTypeReducer
 
   const toggleContinent = (id: number, name: string, map: string) => {
-    dispatch({type: actions.toggleContinent, id, name, map})
+    dispatch({type: actions.toggleContinent, payload: {id, name, map}})
   };
 
   const generateCountries = (capturedCountries: any) => {
     setCountries(capturedCountries);
 
    let totalCountries = capturedCountries.length
-    dispatch({type: actions.generateCountries, totalCountries })
+    dispatch({type: actions.generateCountries, payload: totalCountries })
   };
 
 
   const searchCountry = (e: any) => {
     const target = e.currentTarget.value
-    dispatch({type: actions.searchCountries, target})
+    dispatch({type: actions.searchCountries, payload: target})
   }
 
   const getCountries = () => {
@@ -52,7 +52,7 @@ export const Preview = () => {
     if (reachedlimit) {
       return showToast('Search completed 😉')
     }
-    return  dispatch({type: actions.getCountries, limiter})
+    return  dispatch({type: actions.getCountries, payload: limiter})
   };
 
   const showToast = ( message:string ) => {
@@ -70,7 +70,7 @@ export const Preview = () => {
 
   const searchCountryData = async(countryName: string) => {
     const {  createdCountry } = await UseSearchCountryData(countryName)
-    dispatch({type: actions.searchCountryData, createdCountry})
+    dispatch({type: actions.searchCountryData, payload: createdCountry})
   }
   
   useEffect(() => {
